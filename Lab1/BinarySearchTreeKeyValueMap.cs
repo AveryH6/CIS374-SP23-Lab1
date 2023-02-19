@@ -16,23 +16,29 @@ namespace Lab1
             binarySearchTreeMap.Add(key, value);
         }
 
+        public void Clear()
+        {
+            binarySearchTreeMap.Clear();
+        }
+
         public KeyValuePair<TKey, TValue> Get(TKey key)
         {
             TValue value;
             binarySearchTreeMap.TryGetValue(key, out value);
-            return new KeyValuePair<TKey, TValue>(key, value);  
+            return new KeyValuePair<TKey, TValue>(key, value);
         }
 
         public bool Remove(TKey key)
         {
-            if (binarySearchTreeMap.ContainsKey(key) )
+            if(binarySearchTreeMap.ContainsKey(key))
             {
-                binarySearchTreeMap.Remove(key);
                 return true;
             }
-            else {
+            else
+            {
                 return false;
             }
+            
         }
     }
 }

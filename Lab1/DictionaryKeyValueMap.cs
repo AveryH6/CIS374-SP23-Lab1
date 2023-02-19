@@ -16,16 +16,20 @@ namespace Lab1
             dictionary.Add(key, value);
         }
 
+        public void Clear()
+        {
+            dictionary.Clear();
+        }
+
         public KeyValuePair<TKey, TValue> Get(TKey key)
         {
-            return new KeyValuePair<TKey, TValue>(key, dictionary[key]);
+            return new KeyValuePair<TKey, TValue>( key, dictionary[key] );
         }
 
         public bool Remove(TKey key)
         {
             if (dictionary.ContainsKey(key))
             {
-                dictionary.Remove(key);
                 return true;
             }
             else

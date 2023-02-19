@@ -9,14 +9,31 @@ namespace Lab1
     {
         static void Main(string[] args)
         {
-            int MAX = 100000;
-            int ITERATIONS = 51;
+            int MAX = 100_000;
+            int ITERATIONS = 11;
 
             double totalOrderedCreate = 0;
             double totalUnorderedCreate = 0;
 
             double totalOrderedGet = 0;
-            IKeyValueMap<int, int> keyValueMap = null ;
+            double totalUnorderedGet = 0;
+
+            double totalOrderedRemove = 0;
+            double totalUnorderedRemove = 0;
+
+            double totalHeightOrdered = 0;
+            double totalHeightUnordered = 0;
+
+            IKeyValueMap<int, int> keyValueMap = null;
+
+            var dictionaryKeyValueMap = new DictionaryKeyValueMap<int, int>();
+            var bstKeyValueMap = new BinarySearchTreeKeyValueMap<int, int>();
+            var avlKeyValueMap = new AVLTreeKeyValueMap<int, int>();
+            var redblackKeyValueMap = new RedBlackTreeKeyValueMap<int, int>();
+
+            keyValueMap = avlKeyValueMap;
+
+            // dont compute the height with the bst
 
             for (int c = 0; c < ITERATIONS; c++)
             {
@@ -27,35 +44,39 @@ namespace Lab1
                     intKeyValuePairs.Add(new KeyValuePair<int, int>(i, i + 42));
                 }
 
-                var dictionaryKeyValueMap = new DictionaryKeyValueMap<int, int>();
-                var bstKeyValueMap = new BinarySearchTreeKeyValueMap<int, int>();
-                var avlKeyValueMap = new AVLTreeKeyValueMap<int, int>();
-                var redblackKeyValueMap = new RedBlackTreeKeyValueMap<int, int>();
-
-
-                keyValueMap = bstKeyValueMap;
-
-                //Console.WriteLine("DictionaryKeyValueMap");
-                // Console.WriteLine("BSTKeyValueMap");
+                keyValueMap.Clear();
+                // Ordered
                 totalOrderedCreate += CreateKeyValueMap<int, int>(keyValueMap, intKeyValuePairs);
+                //totalHeightOrdered += keyValueMap.Height;
 
                 totalOrderedGet += QueryKeyValueMap<int, int>(keyValueMap, intKeyValuePairs);
+                totalOrderedRemove += QueryKeyValueMap<int, int>(keyValueMap, intKeyValuePairs);
 
-                //Console.WriteLine("Unordered");
+                // Unordered
                 intKeyValuePairs.Shuffle();
-                dictionaryKeyValueMap = new DictionaryKeyValueMap<int, int>();
-                totalUnorderedCreate += CreateKeyValueMap<int, int>(dictionaryKeyValueMap, intKeyValuePairs);
-                //bstKeyValueMap = new BinarySearchTreeKeyValueMap<int, int>();
-                //CreateKeyValueMap<int, int>(bstKeyValueMap, intKeyValuePairs);
+                keyValueMap.Clear();
+                totalUnorderedCreate += CreateKeyValueMap<int, int>(keyValueMap, intKeyValuePairs);
+                //totalHeightUnordered += keyValueMap.Height;
+
+                totalUnorderedGet += QueryKeyValueMap<int, int>(keyValueMap, intKeyValuePairs);
+                totalUnorderedRemove += QueryKeyValueMap<int, int>(keyValueMap, intKeyValuePairs);
+
             }
+
             //Console.WriteLine("DictionaryKeyValueMap");
             Console.WriteLine(keyValueMap.GetType());
 
             Console.WriteLine("Ordered");
             Console.WriteLine(totalOrderedCreate / ITERATIONS);
+            Console.WriteLine(totalOrderedGet / ITERATIONS);
+            Console.WriteLine(totalHeightOrdered / ITERATIONS);
+            Console.WriteLine(totalOrderedRemove / ITERATIONS);
 
             Console.WriteLine("Unordered");
             Console.WriteLine(totalUnorderedCreate / ITERATIONS);
+            Console.WriteLine(totalUnorderedGet / ITERATIONS);
+            Console.WriteLine(totalHeightUnordered / ITERATIONS);
+            Console.WriteLine(totalUnorderedRemove / ITERATIONS);
 
 
 
@@ -63,8 +84,8 @@ namespace Lab1
 
 
         public static double CreateKeyValueMap<TKey, TValue>(
-                IKeyValueMap<TKey,TValue> keyValueMap,
-                List<KeyValuePair<TKey, TValue>> keyValuePairs )
+                IKeyValueMap<TKey, TValue> keyValueMap,
+                List<KeyValuePair<TKey, TValue>> keyValuePairs)
         {
             Stopwatch stopwatch = new Stopwatch();
 
@@ -80,7 +101,7 @@ namespace Lab1
 
             Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
             return stopwatch.Elapsed.TotalSeconds;
-            
+
 
         }
 
@@ -90,7 +111,21 @@ namespace Lab1
                 IKeyValueMap<TKey, TValue> keyValueMap,
                 List<KeyValuePair<TKey, TValue>> keyValuePairs)
         {
-            return 0.0;
+            Stopwatch stopwatch = new Stopwatch();
+
+            stopwatch.Start();
+
+            // call get
+            foreach (var kvp in keyValuePairs)
+            {
+                keyValueMap.Get(kvp.Key);
+            }
+
+            stopwatch.Stop();
+
+            Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
+            return stopwatch.Elapsed.TotalSeconds;
+
         }
 
         //TODO
@@ -98,7 +133,20 @@ namespace Lab1
                 IKeyValueMap<TKey, TValue> keyValueMap,
                 List<KeyValuePair<TKey, TValue>> keyValuePairs)
         {
-            return 0.0;
+            Stopwatch stopwatch = new Stopwatch();
+
+            stopwatch.Start();
+
+            // call remove
+            foreach( var kvp in keyValuePairs)
+            {
+                keyValueMap.Remove(kvp.Key);
+            }
+
+            stopwatch.Stop();
+
+            Console.WriteLine(stopwatch.Elapsed.TotalSeconds);
+            return stopwatch.Elapsed.TotalSeconds;
         }
     }
 }
